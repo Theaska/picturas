@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load myfilters %}
+{% block content %} 
+
+{% if post.author.id is not user.id %}
+    <h1 class='msg'> Редактировать данный пост может только его автор </h2>
+{% else %}
+<div class='container create_post mx-auto text-center'>
+    <form method="post" enctype="multipart/form-data">{% csrf_token %}
+        {% for field in form %}
+            {{field|addclass:'form-control'}}
+        {% endfor %}
+    <button type="submit" class="btn btn-info text-center" > Принять изменения </button> 
+    </form>
+    <form action ='{% url 'picturas:delete-post' post.id %}' method="get">
+        {% csrf_token %}
+            <button type="submit" class='btn btn-danger'> Удалить пост </button>
+    </form>
+</div>
+{% endif %}
+{% endblock %}

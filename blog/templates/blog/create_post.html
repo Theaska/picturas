@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load myfilters %}
+{% block content %} 
+{% if user.is_authenticated %}
+    <div class='container create_post mx-auto text-center'>
+    {% if post_was_created %}
+            <h1> Пост успешно создан. <h1>
+    <h3> Хотите <a href='{% url 'picturas:create-post' %}'> создать новый пост </a> или вернуться на 
+    <a href='{% url 'picturas:index' %}'> главную страницу </a> </h3>
+    {% else %}
+        <div class="form-group">
+        <form method='post' enctype="multipart/form-data"> 
+            {% csrf_token %}
+            {% for field in form %}
+                <a class='form_control'> {{field.label}} </a>
+                    {{ field|addclass:'form-control'}}
+                <ul> {{ field.errors }} </ul>
+            {% endfor %}
+        <button type='submit' class="btn create_btn text-center"> Создать пост </button>
+        </form>
+        </div>
+    {% endif %}
+    </div>
+{% else %}
+    <h3 class='msg'> Чтобы создавать посты, вам нужно <a href='{% url 'users:login'%}'> войти </a> или 
+    <a href='{% url 'users:signup'%}'> зарегистрироваться </a> </h3>
+{% endif %}
+{% endblock content %} 

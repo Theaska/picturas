@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %} 
+<h1 class='msg'> Пост удален </h1>
+<h2 class='msg'> <a href='{% url 'picturas:index' %}' class='msg'> Вернуться на главную </a> или 
+<a href='{% url 'picturas:create-post' %}' class='msg'> создать новый пост </a> </h2>
+{% endblock content %} 

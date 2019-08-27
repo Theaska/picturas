@@ -1,0 +1,4 @@
+django==2.2.4
+django-heroku
+pillow==6.1.0
+psycopg==2.8.3
