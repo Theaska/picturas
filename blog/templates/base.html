@@ -38,7 +38,7 @@
         {% if user.is_authenticated %}
             <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Привет, {{ user.username }}
+              Привет, {{ user.username }}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="{% url 'users:profile' user.id %}"> Профиль </a>
@@ -60,7 +60,6 @@
 
 
 {% block content %}
-
 {% endblock content%}
 </body>
 </html>

@@ -7,9 +7,9 @@ app_name = 'users'
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', logout_view, name='logout'),
-    path('profile/<int:user_id>', ProfileView.as_view(), name='profile'),
-    path('profile/<int:user_id>/add_remove_friend', login_required(AddRemoveFriend.as_view()), name='add-remove-friend'),
-    path('profile/<int:user_id>/edit', login_required(EditProfileView.as_view()), name='edit-profile'),
+    path('<int:user_id>/profile/', ProfileView.as_view(), name='profile'),
+    path('<int:user_id>/profile/add_remove_friend', login_required(AddRemoveFriend.as_view()), name='add-remove-friend'),
+    path('<int:user_id>/profile/edit', login_required(EditProfileView.as_view()), name='edit-profile'),
     path('signup/', SignupView.as_view(), name='signup'),
     path('password_reset/', views.PasswordResetView.as_view(success_url=reverse_lazy('users:password_reset_done'), template_name='registration/password_reset.html'), name='password_reset'),
     path('password_reset/done', views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), name='password_reset_done'),

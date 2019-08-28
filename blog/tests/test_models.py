@@ -6,12 +6,6 @@ import os
 import codecs
 import tempfile 
 
-# class TestUserModel(TestCase):
-
-#     def test_create_user(self):
-#         user = User.objects.create_user(username='u', password='12312')
-#         print(user.user_profile)
-
 class TestProfileModel(TestCase):
 
     def test_create_profile_without_avatar(self):

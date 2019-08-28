@@ -1,20 +1,19 @@
 {% extends 'base.html' %}
-{% load myfilters %}
 {% block content %} 
 <div class='container post-container'>
     {% if post %}
-        <p> <img class='post-container' src='{{ post.image.url }}' height='300'/> </p>
+        <p> <img class='post-container' src='{{ post.image.url }}' height='500'/> </p>
         <p> Описание: {{ post.description }} </p>
         <p> Дата редактирования: {{ post.date_edit|date:"d F Y G:i" }} </p>
-        <form method='post' action='{% url 'picturas:like-post' post.id %}'>
+        <form method='post' action='{% url 'picturas:like-post' post.id %}'>{% csrf_token %}
         <p> {{ post.get_likes }} like{{post.get_likes|pluralize}}
-        {% csrf_token %} <button type='submit' class="btn btn-sm btn-danger"> <i class="fas fa-heart"></i> </button>
+            <button type='submit' class="btn btn-sm btn-danger"> <i class="fas fa-heart"></i> </button>
         </p>
         </form>
         <p> Автор: 
-        <a href="{% url 'users:profile' post.author.id %}">  {{ post.author.username }} </b> </a>
+            <a href="{% url 'users:profile' post.author.id %}">  {{ post.author.username }} </b> </a>
         </p>
-        {% if post.author.id == user.id %}
+        {% if post.author == user %}
             <a class='btn btn-info' href='{% url 'picturas:edit-post' post.id %}'> Редактировать пост </a>
         {% endif %}
         <div class='block comment mx-auto'>
@@ -32,7 +31,7 @@
             {% if comment_form %}
                 <form method='post'>
                     <p> Комментарий: 
-                    {% csrf_token %} {{comment_form.text|addclass:'form-control'}} </p>
+                    {% csrf_token %} {{comment_form.text}} </p>
                 <button type='submit' class='btn create_btn'> Отправить </button>
                 </form>
             {% else %}

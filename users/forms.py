@@ -3,13 +3,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UsernameField
 from users.models import Profile
 from django.utils.translation import gettext, gettext_lazy as _
-from django.forms.widgets import SelectDateWidget 
+from django.forms.widgets import SelectDateWidget
 from django.core.exceptions import ValidationError
 
 class LoginForm(AuthenticationForm):
 
     username = UsernameField(widget=forms.TextInput(attrs={'autofocus': True, 'placeholder': 'Username', 'class': 'form-control'}))
-    
+
     password = forms.CharField(
         label=_("Пароль"),
         strip=False,
@@ -18,7 +18,7 @@ class LoginForm(AuthenticationForm):
 
     error_messages = {
         'invalid_login': _(
-            "Пожалуйста, введите правильное %(username)s и пароль."
+            "Введен неправильный логин или пароль"
         ),
     }
 
@@ -45,30 +45,28 @@ class SignupForm(UserCreationForm):
         fields = ('email', 'username')
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'}),
+            'email': forms.EmailInput(attrs={'autofocus': True, 'class': 'form-control', 'placeholder': 'Email'}),
         }
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
         username = self.cleaned_data.get('username')
         if email and User.objects.filter(email=email).exclude(username=username).exists():
-            raise forms.ValidationError(u'Email addresses must be unique.')
+            raise forms.ValidationError('Email addresses must be unique.')
         return email
 
 class UpdateProfileForm(forms.ModelForm):
     max_size_img = 3
-    
+    date_birth = forms.DateField(label=_("Дата рождения"), input_formats=['%d-%m-%Y'],
+                                widget=forms.DateInput(format=('%d-%m-%Y'), attrs={'class': 'form-control', 'placeholder': 'Дата рождения в формате dd-mm-yyyy'}))
     class Meta:
-        date_birth = forms.DateField(input_formats=['%d-%m-%Y'])
         model = Profile
         fields = ['date_birth', 'about', 'avatar']
         labels = {
-                'date_birth': _('Дата рождения'),
                 'about': _("Обо мне"),
                 'avatar': _("Аватар"),
                 }
         widgets = {
-            'date_birth': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Дата рождения в формате yyyy-mm-dd'}),
             'about': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Обо мне'}),
         }
 

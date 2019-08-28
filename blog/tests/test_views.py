@@ -115,6 +115,7 @@ class TestPostView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(response.context['comments'], [comment], transform=lambda x:x)
 
+        
 class TestCreatePostView(TestCase):
 
     def test_create_post_without_login(self):
@@ -129,3 +130,50 @@ class TestCreatePostView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, '<form')
         self.assertIsInstance(response.context['form'], PostForm)
+
+class TestLikePostView(View):   
+
+    @override_settings(MEDIA_ROOT=tempfile.gettempdir())
+    def setUp(self):
+        dir_ = os.path.dirname(os.path.abspath(__file__))
+        image = dir_+'\\test.png'
+        f = codecs.open(image, encoding='base64')
+        self.image = SimpleUploadedFile(f.name, f.read())
+        f.close()
+        user = User.objects.create_user(username='user', password='1234')
+        self.post = Post.objects.create(author=user, description='', image=self.image)
+
+    def test_like_post_without_login(self):
+        response = self.client.post(reverse("picturas:like-post", args=(self.post.id,)))
+        self.assertEqual(response.status_code, 302)
+    
+    def test_like_post_with_login(self):
+        self.client.login(username='user', password='1234')
+        response = self.client.get(reverse('picturas:like-post', args=(self.post.id,)))
+        self.assertEqual(self.post.get_likes, 1)
+        response = self.client.get(reverse('picturas:like-post', args=(self.post.id,)))
+        self.assertEqual(self.post.get_likes, 0)
+
+
+class EditPostView(TestCase):
+    
+    @override_settings(MEDIA_ROOT=tempfile.gettempdir())
+    def setUp(self):
+        dir_ = os.path.dirname(os.path.abspath(__file__))
+        image = dir_+'\\test.png'
+        f = codecs.open(image, encoding='base64')
+        self.image = SimpleUploadedFile(f.name, f.read())
+        f.close()
+        user = User.objects.create_user(username='user', password='1234')
+        self.post = Post.objects.create(author=user, description='', image=self.image)
+    
+    def test_editpost_if_not_author(self):
+        user = User.objects.create_user(username='test', password='1234')
+        self.client.login(username='test', password='1234')
+        response = self.client.get(reverse('picturas:edit-post', args=(self.post.id, )))
+        self.assertEqual(response.status_code, 404)
+
+    def test_editpost_if_author(self):
+        self.client.login(username='user', password='1234')
+        response = self.client.get(reverse('picturas:edit-post', args=(self.post.id, )))
+        self.assertEqual(response.status_code, 200)

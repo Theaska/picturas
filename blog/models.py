@@ -8,7 +8,7 @@ def user_directory_path(instance, filename):
 
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    description = models.TextField(max_length=500, blank=True)
+    description = models.TextField(max_length=1000, blank=True)
     image = models.ImageField(upload_to=user_directory_path)
     likes = models.ManyToManyField(User, related_name='users_likes', blank=True)
     date_pub = models.DateTimeField(default=timezone.now)

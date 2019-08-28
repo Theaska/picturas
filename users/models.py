@@ -9,13 +9,14 @@ def user_avatar_path(instance, filename):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_profile')
-    date_birth = models.DateField(blank=True)
+    date_birth = models.DateField(null=True)
     about = models.TextField(max_length=500, blank=True)
     avatar = models.ImageField(upload_to=user_avatar_path, storage=OverwriteStorage(), default='default/anonymous.png')  
-    friends = models.ManyToManyField('Profile', blank=True)
+    friends = models.ManyToManyField('Profile')
 
     def __str__(self):
         return str(self.user.username)
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

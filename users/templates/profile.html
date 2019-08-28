@@ -5,7 +5,7 @@
     <h1> <i class='nickname'> {{ profile.user.username }} </i> </h1> 
     <h2> Дата рождения: 
     {% if profile.date_birth %}
-        <i> {{ profile.date_birth }} </i>
+        <i> {{ profile.date_birth|date:"d F Y" }} </i>
     {% endif %}
     </h2>
     <h2> Обо мне: 
@@ -13,11 +13,9 @@
         <i> {{ profile.about }} </i> 
     {% endif %}
     </h2>
-    <h2> <img class='avatar' src= '{{ profile.avatar.url }}' width='100'/> </h2>
+    <h2> <img class='avatar' src= '{{ profile.avatar.url }}'/> </h2>
     {% if user.id == profile.user.id %}
-        <a href="{% url 'users:edit-profile' profile.user.id %}">
-        <button class='btn btn-info text-center'>  Редактировать профиль 
-        </button> </a>
+        <a href="{% url 'users:edit-profile' profile.user.id %}" class='btn btn-info text-center'>  Редактировать профиль  </a>
     {% else %}
         <form action = '{% url 'users:add-remove-friend' profile.user.id %}' method= 'post'>
         {% csrf_token %}

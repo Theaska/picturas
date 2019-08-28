@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
-{% load myfilters %}
-{% block content %} 
 
-{% if profile.user.id is not user.id %}
-    <h1 class='msg'> Вы не можете редактировать этот профиль </h2>
-{% else %}
+{% block content %} 
 <div class='container edit-profile mx-auto text-center'>
     <form method="post" enctype="multipart/form-data">{% csrf_token %}
         {% for field in form %}
@@ -15,5 +11,4 @@
     <button type="submit" class="btn btn-info text-center" > Принять изменения </button> 
     </form>
 </div>
-{% endif %}
 {% endblock %}

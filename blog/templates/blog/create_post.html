@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load myfilters %}
 {% block content %} 
 {% if user.is_authenticated %}
     <div class='container create_post mx-auto text-center'>
@@ -13,7 +12,7 @@
             {% csrf_token %}
             {% for field in form %}
                 <a class='form_control'> {{field.label}} </a>
-                    {{ field|addclass:'form-control'}}
+                    {{ field }}
                 <ul> {{ field.errors }} </ul>
             {% endfor %}
         <button type='submit' class="btn create_btn text-center"> Создать пост </button>

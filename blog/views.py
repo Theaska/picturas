@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
 from blog.forms import PostForm, CommentForm
 from django.urls import reverse_lazy
+from django.http import Http404
+
 
 class IndexView(ListView):
     model = Post
@@ -70,11 +72,13 @@ class PostView(DetailView):
             comment.author = request.user
             comment.in_post = post
             comment.save()
-        return render(request=request, template_name=self.template_name, context={'comment_form': form, 
-                                                                                'post': post,
+            return render(request=request, template_name=self.template_name, context={'comment_form': self.comment_form, 
+                                                                                    'post': post,
                                                                                     'comments': post.comment_set.order_by('-date_publish')})
-
-
+        else: 
+            return render(request=request, template_name=self.template_name, context={'comment_form': form, 
+                                                                                    'post': post,
+                                                                                    'comments': post.comment_set.order_by('-date_publish')})
 class CreatePostView(CreateView):
     form_class = PostForm
     template_name = 'blog/create_post.html'
@@ -89,7 +93,7 @@ class CreatePostView(CreateView):
             post.author = request.user
             post.save()
             context['post_was_created'] = True
-            context['form'] = form
+            context['form'] = self.form_class
             return render(request=request, template_name=self.template_name, context=context)
         else:
             context['post_was_created'] = False
@@ -98,9 +102,15 @@ class CreatePostView(CreateView):
 
 class EditPostView(UpdateView):
     model = Post
-    fields = ['description', 'image']
     pk_url_kwarg = 'post_id'
     template_name = 'blog/edit_post.html'
+    form_class = PostForm
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.author != self.request.user:
+            raise Http404("You are not author of this post")
+        return super(EditPostView, self).dispatch(request, *args, **kwargs)
 
     def get_success_url(self):
         post_id=self.kwargs['post_id']
